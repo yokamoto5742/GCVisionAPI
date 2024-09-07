@@ -8,6 +8,11 @@ MAX_FILE_SIZE = 200 * 1024 * 1024  # 200MB
 SUPPORTED_TYPES = ["png", "jpg"]
 
 
+def load_markdown_file(filename):
+    with open(filename, 'r', encoding='utf-8') as file:
+        return file.read()
+
+
 def transcribe_image(file):
     if file is None:
         return None
@@ -24,6 +29,19 @@ def transcribe_image(file):
     # OCR execution
     response = client.document_text_detection(image=image)
     return response.full_text_annotation.text
+
+
+def show_setting_modal():
+    with st.expander("説明"):
+        tab1, tab2 = st.tabs(["アプリについて", "プライバシーガイドライン"])
+
+        with tab1:
+            readme_content = load_markdown_file("README.md")
+            st.markdown(readme_content)
+
+        with tab2:
+            privacy_content = load_markdown_file("privacy_guidelines.md")
+            st.markdown(privacy_content)
 
 
 def main():
@@ -44,6 +62,9 @@ def main():
             st.download_button("ダウンロード", transcript.encode("utf-8"), "transcription.txt", "text/plain")
     elif uploaded_image_file:
         st.error("ファイルサイズが大きすぎます。200MB以下のファイルをアップロードしてください。")
+
+    if st.button("アプリの説明"):
+        show_setting_modal()
 
 
 if __name__ == "__main__":
