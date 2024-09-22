@@ -29,19 +29,23 @@ def transcribe_image(image_content):
 
 
 def process_pdf(pdf_file):
-    pdf_bytes = pdf_file.read()
-    images = convert_from_bytes(pdf_bytes)
+    try:
+        pdf_bytes = pdf_file.read()
+        images = convert_from_bytes(pdf_bytes)
 
-    all_text = ""
-    for i, image in enumerate(images):
-        img_byte_arr = io.BytesIO()
-        image.save(img_byte_arr, format='PNG')
-        img_byte_arr = img_byte_arr.getvalue()
+        all_text = ""
+        for i, image in enumerate(images):
+            img_byte_arr = io.BytesIO()
+            image.save(img_byte_arr, format='PNG')
+            img_byte_arr = img_byte_arr.getvalue()
 
-        text = transcribe_image(img_byte_arr)
-        all_text += f"--- ページ {i + 1} ---\n{text}\n\n"
+            text = transcribe_image(img_byte_arr)
+            all_text += f"--- ページ {i + 1} ---\n{text}\n\n"
 
-    return all_text
+        return all_text
+    except Exception as e:
+        st.error(f"PDFの処理中にエラーが発生しました: {str(e)}")
+        return None
 
 
 def show_setting_modal():
@@ -58,9 +62,9 @@ def show_setting_modal():
 
 
 def main():
-    st.title("画像・PDFファイルのOCRツール")
+    st.title("画像ファイルのOCRツール")
 
-    uploaded_file = st.file_uploader("画像またはPDFをアップロードしてください", type=SUPPORTED_TYPES)
+    uploaded_file = st.file_uploader("画像ファイルまたは20ページ程度までのPDFをアップロードしてください", type=SUPPORTED_TYPES)
 
     if uploaded_file and uploaded_file.size <= MAX_FILE_SIZE:
         transcription_message = st.empty()
