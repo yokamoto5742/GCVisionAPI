@@ -76,7 +76,7 @@ def show_setting_modal():
 def main():
     st.title("画像ファイルのOCRツール")
 
-    uploaded_files = st.file_uploader("5枚までの画像ファイルまたは20ページまでのPDFファイルをアップロードしてください",
+    uploaded_files = st.file_uploader("5枚までの画像ファイルまたは1つのPDFファイル(20ページまで)をアップロードしてください",
                                       type=SUPPORTED_TYPES, accept_multiple_files=True)
 
     if uploaded_files:
